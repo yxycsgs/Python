@@ -1,0 +1,42 @@
+import math
+
+mean = lambda x: sum(x)/len(x)
+variance = lambda x: map(lambda y: (y-mean(x))**2, x)
+stdev = lambda x: math.sqrt(mean(variance(x)))
+
+def select(data, min, max):
+	return [i for i in data if i >= min and i <= max]
+
+def readdata(name):
+	data = []
+	with open(name, "r") as my_file:
+		for line in my_file.readlines():
+                    record = line.strip()
+		    try:
+			    record = float(record)
+                    except ValueError:
+			    record = 0
+	            data.append(record)
+        return data       
+
+def main():        
+	Filename = raw_input("Which file to be reduced: ")
+	Output = raw_input("Which file is the result: ")
+	data = readdata(Filename)
+	x = len(data)
+        m = mean(data)
+	s = stdev(data)
+	data = select(data, m-3*x, m+3*x)
+        y = len(data)
+
+        while x>y:
+		x = y
+		m = mean(data)
+		x = stdev(data)
+		data = select(data, m-3*x, m+3*x)
+                y = len(data)
+	with open(Output, "w") as new:
+		for i in data:
+			new.write(str(i)+"\n")
+
+main()
